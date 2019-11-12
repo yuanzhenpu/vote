@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1,minimun-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="https://znbc.oss-cn-beijing.aliyuncs.com/picture/icon/20191014/znb.png">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/layer.css?v=3.1.0">
+	<link rel="stylesheet" href="css/swiper.min.css">
+    <!-- 滑动验证CSS -->
+    <link type="text/css" rel="stylesheet" href="css/slide-unlock.css">
+    <title>投票</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        /* 轮播图 */
+        .swiper-container{
+            width: 90%;
+        }
+        .swiper-wrapper img {
+            height: 160px;
+        }
+        .swiper-wrapper{   
+            margin: 10px auto;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 50px;
+            background: white;
+            border-top: 1px solid #d2d2d2;
+        }
+
+        .footer ul {
+            display: inline-flex;
+            width: 100%;
+            text-align: center;
+            padding-top: 5px;
+            height: 50px;
+        }
+
+        .footer i {
+            display: block;
+            font-size: 25px;
+        }
+
+        .footer li {
+            width: 25%;
+        }
+
+        .topMsg {
+            width: 90%;
+            /* height: 60px; */
+            margin: 0 auto;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-shadow: 0px 2px 5px #999;
+        }
+
+        .topMsg ul {
+            text-align: center;
+            padding: 20px 0px;
+        }
+
+        .topMsg li {
+            display: inline-block;
+            /* margin-top: 5%; */
+            font-size: 1rem;
+            padding: 0 25px;
+        }
+
+        .topMsgLiSpan {
+            font-weight: 900;
+            font-size: 1rem;
+        }
+
+        /* 投票按钮 */
+        .voteBtn {
+            width: 90%;
+            border-radius: 30px;
+            height: 30px;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            margin: 20px auto 15px;
+            background-image: linear-gradient(to right, #4dc1e4, #00c7a5);
+        }
+
+        /* 报名按钮 */
+        .signBtn {
+            width: 90%;
+            border-radius: 30px;
+            height: 30px;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            margin: 10px auto;
+            background-image: linear-gradient(to right, #EE2C2C, #FF3030);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <h1>ID:{{id}} 进行投票</h1> -->
+        <div class="topMsg" v-cloak>
+            <ul>
+                <li>姓名：选手姓名</li>
+                <li>票数：1560票</li>
+                <li>编号：{{id}}</li>
+                <li style="margin-top: 10px;">当前排名：第<span class="topMsgLiSpan"> 1 </span>名</li>
+            </ul>
+        </div>
+
+        <!-- 轮播 -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <img style="background: #4390EE;" class="swiper-slide"></img>
+                <img style="background: #CA4040;" class="swiper-slide"></img>
+                <img style="background: #FF8604;" class="swiper-slide"></img>
+                <img style="background: #2E8B57;" class="swiper-slide"></img>
+            </div>
+            <!-- 分页器 -->
+            <div class="swiper-pagination">
+            </div>
+        </div>
+
+        <!-- 滑动验证 -->
+        <div id="slider" style="display: none;">
+            <div id="slider_bg"></div>
+            <span id="label">>></span> <span id="labelTip">拖动滑块验证</span>
+        </div>
+
+        <!-- 投票按钮 -->
+        <div class="voteBtn" @click="voteBtn()" >
+            投 票
+        </div>
+
+        <!-- 报名按钮 -->
+        <div class="signBtn" @click="signBtn()">
+            我要报名
+        </div>
+
+        <!-- 底部选项卡开始 -->
+        <div class="footer">
+            <ul>
+                <li @click="goUrl('main.html')"><i class="icon iconfont icon-shouye"></i>首页</li>
+                <li @click="goUrl('sign.html')"><i class="icon iconfont icon-xiugai"></i>报名</li>
+                <li @click="goUrl('rank.html')"><i class="icon iconfont icon-01"></i>榜单</li>
+                <li
+                    @click="location.href='https://m.znbchina.com/h5shop/back/news/news_info_f.html?id=3704&isapp=0&uid=1335570'">
+                    <i class="icon iconfont icon-tishi"></i>活动说明</li>
+            </ul>
+        </div>
+        <!-- 底部选项卡结束 -->
+    </div>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/layui.js"></script>
+    <!-- <script src="js/modernizr.custom.js"></script> -->
+    <script src="js/tools.js"></script>
+    <script src="js/vue.min.js"></script>
+	<script src="js/swiper.min.js"></script>
+    <!-- 滑动验证用的JS -->
+    <script type="text/javascript" src="js/jquery.slideunlock.js"></script>
+    <script>
+        //页面跳转
+        function goUrl(url) {
+            location.replace(url)
+            // location.href = url + "?phone=" + getParm("phone") + "&isapp=" + getParm("isapp")
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                id: tools.getParm('id'),
+                permitVote:0, //‘0’未进行验证不允许投票，‘1’以验证允许投票
+            },
+            methods: {
+                // 投票按钮
+                voteBtn:function(){
+                    $('#slider').css('display','')
+                    if(app.permitVote==1){
+                        layer.msg('恭喜你，投票成功！',{time:800})
+                    }else{
+                        layer.msg('请先验证！',{time:800})
+                    }
+                },
+                //我要报名按钮
+                signBtn:function(){
+                    location.href='./sign.html'
+                }
+
+            },
+        })
+
+        //Swiper轮播图
+		var mySwiper = new Swiper('.swiper-container', {
+			// autoplay: true, //等同于以下设置
+			loop: true, // 循环模式选项
+			autoplay: {
+				delay: 2000,
+				stopOnLastSlide: false,
+				disableOnInteraction: true,
+			},
+			pagination: {  //分页器
+				el: '.swiper-pagination',
+			},
+		});
+
+        // 滑动验证
+        $(function () {
+            var slider = new SliderUnlock("#slider", {
+                successLabelTip: "验证成功!"
+            }, function () {
+                app.permitVote=1;
+                //以下四行设置恢复初始，不需要可以删除
+                // setTimeout(function () {
+                //     $("#labelTip").html("拖动滑块验证");
+                //     $("#labelTip").css("color", "#787878");
+                // }, 2000);
+                // slider.init();
+            });
+            slider.init();
+        })
+    </script>
+</body>
+
+</html>

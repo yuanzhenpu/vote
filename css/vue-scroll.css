@@ -1,0 +1,39 @@
+* {
+			margin:0;
+			padding: 0;
+		}
+		#app {
+			/* width: 80%;
+			height: 500px;
+			background-color: #d6edff; */
+			margin: 0 auto;
+		}
+		#app ul {
+			width: 100%;
+			padding-bottom: 50px;
+			list-style: none;
+		}
+		#app ul li {
+			width: 80%;
+			height: 60px;
+			display: block;
+			background-color: pink;
+			margin: 5px auto;
+			text-align: center;
+		}
+		#app ul .loading , #app ul .success , #app ul .before {
+			position: absolute;
+			left: calc(50% - 16px);
+			bottom: 10px;
+		}
+		#app ul .loading {
+			animation: spin 1s linear infinite;
+		}
+		@keyframes spin
+		{
+		    0%   {transform: rotate(0deg);}
+		    100% {transform: rotate(360deg);}
+		}
+		[v-cloak] {
+			display: none;
+		}

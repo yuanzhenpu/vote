@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	<link href="css/base.css" rel="stylesheet" />
+	<link href="css/common.css" rel="stylesheet" />
+	<link href="font/iconfont.css" rel="stylesheet" />
+	<link href="layui/css/layui.css" rel="stylesheet" />
+	<style>
+		/*投票信息*/
+			.voteMsg{background: #eee;}
+			.voteMsg li{float: left;width: 33.3%;box-sizing: border-box;border-right: 1px solid #d2d2d2;}
+			.voteMsg li:last-child{border-right: none;}
+			.voteMsg i{margin: 0 5px;}
+			/*倒计时*/
+			.timeDown span{display: inline-block;border: 1px solid #d2d2d2;border-radius: 5px;padding: 5px;margin: 0 10px;}
+			.signBtn{background: #ff4238;display: block;width: 95%;margin: 0 auto;height: 40px;line-height: 40px;text-decoration: none;color: #fff;border-radius: 5px;}
+			.searchForm{border: 1px solid #d2d2d2;border-radius: 5px;margin: 10px auto;width: 95%;box-sizing: border-box;}
+			.searchForm input{border: none; border-right: 1px solid #d2d2d2;width: 70%;box-sizing: border-box;height: 26px;line-height: 30px;height: 30px;padding: 0 5px;outline: none;}
+			.searchForm span{line-height: 30px;height: 30px;box-sizing: border-box;width: 30%;cursor: pointer;}
+			
+			/*瀑布流层*/
+		    .waterfall{
+		    	padding: 5px;
+		        -moz-column-count:2; /* Firefox */
+		        -webkit-column-count:2; /* Safari 和 Chrome */
+		        column-count:2;
+		        -moz-column-gap: 1em;
+			    -webkit-column-gap: 1em;
+			    column-gap: 1em;
+		    }
+		    /*一个内容层*/
+		    .waterfall li{
+		      margin: 0 0 1em 0;
+		      box-shadow: 2px 2px 2px #eee;
+		      -moz-page-break-inside: avoid;
+		      -webkit-column-break-inside: avoid;
+		      break-inside: avoid;
+		      padding-bottom: 5px;position: relative;
+		    }
+		    .waterfall img{
+		        width: 100%;
+		        margin-bottom:10px;
+		    }
+		    .waterfall p{padding: 0 5px;}
+		    .waterfall span{position: absolute;right: 5px;bottom: 5px;border: 1px solid #9237f5;display: block;width: 40px;height: 40px;line-height: 40px;text-align: center;border-radius: 50%;color: #9237f5;background:#fff;font-size: 14px;}
+		    .waterfall i{position: absolute;top: 0;left: 0;display: block;background: rgba(0,0,0,0.5);font-size: 14px;color: #fff;font-style: normal;padding: 0 5px;}
+			.play {
+			    position: absolute;
+			    top: 50%;
+			    left: 50%;
+			    -webkit-transform: translate3d(-50%,-50%,0);
+			    transform: translate3d(-50%,-50%,0);
+			    width: 50px;
+			    height: 50px;
+			    background-image: url("https://znbc.oss-cn-beijing.aliyuncs.com/picture/20190827/share_play1.png");
+			    -webkit-background-size: cover;
+			    background-size: cover;
+			    z-index: 99;
+			}
+			[v-cloak]{
+				display: none;
+			}
+		</style>
+</head>
+
+<body>
+	<div id="app">
+		<div class="main_wrap">
+			<div>
+				<!-- <img class="response" src="https://znbc.oss-cn-beijing.aliyuncs.com/liulun/2018042817570832692.png" width="100%" alt="" /> -->
+			<img class="response" src="https://znbc.oss-cn-beijing.aliyuncs.com/picture/icon/20190822/35013e5f097cda6bf2a2dcb6f1b5249.jpg" width="100%" alt="" />
+			</div>
+			<!--投票信息-->
+			<ul class="voteMsg tc pt10 pb10 oh" v-cloak>
+				<li>
+					<p><i class="icon iconfont icon-icon-test"></i>已报名</p>
+					<p>{{voteObj.num}}</p>
+				</li>
+				<li>
+					<p><i class="icon iconfont icon-dianzan"></i>累计投票</p>
+					<p>{{voteObj.allVoteNum}}</p>
+				</li>
+				<li>
+					<p><i class="icon iconfont icon-iconfonteyes"></i>访问量</p>
+					<p>{{voteObj.views}}</p>
+				</li>
+			</ul>
+			<!--活动倒计时-->
+			<div class="timeDown tc pt10 pb10">
+				<p class="mb10 timeover">活动结束倒计时</p>
+				<p class="" v-cloak>
+					<span>{{downObj.day}}天</span>
+					<span>{{downObj.hour}}时</span>
+					<span>{{downObj.minute}}分</span>
+					<span>{{downObj.second}}秒</span>
+				</p>
+			</div>
+			<!--报名-->
+			<a v-on:click="goUrl('sign.html?phone='+phone+'&isapp='+isapp)" class="signBtn tc">我要报名</a>
+			<div class="searchForm oh">
+				<input v-model="search" type="text" class="fl" placeholder="请输入编号" />
+				<span v-on:click="searchFun" class="fl tc">搜索</span>
+			</div>
+			<ul class="waterfall" v-if="playerArr.length!=0">
+				<li v-for="el in playerArr" v-on:click="window.location.href='/h5shop/activity/cgnicevideo/info.html?id='+el.id+'&phone='+phone+'&isapp='+isapp">
+					<img src="https://znbc.oss-cn-beijing.aliyuncs.com/hd/20190822/fef909758553e6ed33370d1cc969699.jpg">
+					<p>{{el.name}}</p>
+					<span>投票</span>
+					<i>{{el.no.substr(8,4)}}号，{{el.votes}}票</i>
+					<div id="play_btn" log="播放按钮" class="play"></div>
+				</li>
+			</ul>
+		</div>
+		<ul class="footer tc">
+			<li class="active"><i class="icon iconfont icon-shouye"></i>首页</li>
+			<li v-on:click="goUrl('sign.html?phone='+phone+'&isapp='+isapp)"><i class="icon iconfont icon-xiugai"></i>报名</li>
+			<li v-on:click="goUrl('rank.html?phone='+phone+'&isapp='+isapp)"><i class="icon iconfont icon-01"></i>榜单</li>
+			<li onclick="go()"><i class="icon iconfont icon-tishi"></i>活动说明</li>
+		</ul>
+	</div>
+	<script src="js/jquery1.42.min.js"></script>
+	<script src="js/tools.js"></script>
+	<script src="layui/layui.js"></script>
+	<script src="js/vue.min.js"></script>
+	<script src="./js/inf.js"></script>
+	<script src="./js/tools.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script src="js/wxshare.js"></script>
+	<script>
+		function go(){
+			location.href = 'https://m.znbchina.com/h5shop/back/news/news_info_f.html?id=3190&uid=1201469&from=groupmessage';
+			// alert('https://m.znbchina.com/h5shop/back/news/news_info_f.html?id=3190&isapp=0&uid=1200476');
+		}
+		// wxshare("比人气，送现房","https://znbc.oss-cn-beijing.aliyuncs.com/liulun/2018042817570832692.png","比人气，送现房")
+		function getContent() {
+			return "CCTV知名品牌茅台集团新贵-华盛名酒强势入驻商丘，快来投票参与活动吧！";
+		}
+		function getThum() {
+			return "http://znbc.oss-cn-beijing.aliyuncs.com/picture/icon/20190822/icon_mt_jp.jpg";
+		}
+		function getParm(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null)  {
+			return decodeURIComponent(r[2]);
+			}
+			//return null;
+		}
+		
+		var msgFp = null, timer = null;
+
+		layui.use("layer", function () { });
+		var app = new Vue({
+			el: "#app",
+			data: {
+				voteObj: { voteType: {} },
+
+				isSearch: false,
+
+				playerArr: [],
+				totalpage: 1,
+				curPage: 1,
+				isAsking: false,
+				loadFp: 1,
+				phone: 0,
+				isapp: 0,
+				search: "",
+				downObj: {
+					day: 0,
+					hour: 0,
+					minute: 0,
+					second: 0,
+					time: 0,
+				}
+			},
+			methods: {
+				goUrl: function (url) {
+					location.href = url;
+				},
+				goInfo: function (id) {
+					location.href = 'info.html?id=' + id + '&phone=' + app.phone;
+				},
+				searchFun: function () {
+					//恢复第一页
+					app.curPage = 1;
+					//清空选手
+					app.playerArr = [];
+
+					var dataObj = {
+						//						type:toolObj.type,
+						type: maotaiID,
+						pageSize: 10,
+						pageNum: 1,
+						zuixin: 2,
+					}
+					if (app.search != "") {
+						app.isSearch = true;
+						dataObj.search = app.search;
+					} else {
+						app.isSearch = false;
+					}
+					//获取商品详情
+					inf.ajax("public/Vote/getVoteList",
+						dataObj, function (result) {
+							console.log(result);
+							app.totalpage = eval(result).data.totalpage;
+							app.playerArr = eval(result).data.voteList;
+
+						}
+					)
+				}
+			}
+		})
+		$(function () {
+			$(window).scroll(function () {
+				// alert(app.isSearch)
+				// alert(1)
+				if (app.isSearch) { return; }
+				var scrollTop = $(this).scrollTop();
+				var scrollHeight = $(document).height();
+				var windowHeight = $(this).height();
+				if (scrollTop + windowHeight < scrollHeight) {
+					
+					if (app.curPage < app.totalpage) {
+						app.loadFp = layui.layer.load();
+						if (!app.isAsking) {
+							app.curPage++;
+							app.isAsking = true,
+								//列表接口
+								inf.ajax("public/Vote/getVoteList",
+									{
+										//								type:toolObj.type,
+										type: maotaiID,
+										pageSize: 10,
+										pageNum: app.curPage,
+										zuixin: 2,
+									}, function (result) {
+										layui.layer.close(app.loadFp);
+										app.isAsking = false;
+
+										var arr = result.data.voteList;
+										for (var i = 0; i < arr.length; i++) {
+											app.playerArr.push(arr[i]);
+										}
+									}
+								)
+
+						}
+					} else {
+						// if (!msgFp) {
+						// 	msgFp = layui.layer.msg("所有数据已经加载完毕！", { time: 1000 }, function () {
+						// 		msgFp = null;
+						// 	});
+						// }
+					}
+				}
+			});
+			app.isAsking = true,
+
+				inf.ajax("public/Vote/getVoteInfoByTypeid",
+					{
+						//					type:toolObj.type,
+						type: maotaiID,
+					}, function (result) {
+						app.voteObj = eval(result).data.voteType;
+						app.downObj.time = Math.floor(app.voteObj.fromEnd / 1000);
+						timer = setInterval(updateTimeDown, 1000);
+						document.title = app.voteObj.name
+						localStorage.setItem("url", app.voteObj.info_url)
+					}
+				)
+
+			inf.ajax("public/Vote/getVoteList",
+				{
+					//					type:toolObj.type,
+					type: maotaiID,
+					pageSize: 10,
+					pageNum: 1,
+					zuixin: 2,
+				}, function (result) {
+					app.isAsking = false,
+						app.totalpage = eval(result).data.totalpage;
+					app.phone = getParm("phone");
+					app.isapp = getParm("isapp");
+					app.playerArr = eval(result).data.voteList;
+					console.log(app.playerArr)
+				}
+			)
+			//如果本地缓存为空，把参数存入本地缓存，以后每个页面都在缓存里取值，不再截取url
+			if (!getItem("parm")) {
+				saveItem("isapp",getParm("isapp"))
+				saveItem("phone",getParm("phone"))
+				var parm = {
+					isapp: getParm("isapp"),
+					phone: getParm("phone")
+				}
+				parm = JSON.stringify(parm);
+				saveItem("parm", parm);
+			} 
+			
+			// var parm = {
+			// 		isapp: getParm("isapp"),
+			// 		phone: getParm("phone")
+			// 	}
+
+			// 	if (parm.isapp != 1 ) {
+			// 		// console
+			// 		saveItem("parm", getItem("parm"));
+			// 	}else {
+			// 		parm = JSON.stringify(parm);
+			// 		saveItem("parm", parm);
+			// 	}
+				
+
+			
+			//列表接口
+
+			//倒计时
+			//			app.downObj.time=2*24*3600+5*3600+17*60+6;
+
+		})
+		function updateTimeDown() {
+			//倒计时
+			app.downObj.day = Math.floor(app.downObj.time / (24 * 3600));//天
+			app.downObj.hour = Math.floor((app.downObj.time - app.downObj.day * 3600 * 24) / 3600);//时
+
+			app.downObj.minute = Math.floor((app.downObj.time - app.downObj.day * 3600 * 24 - app.downObj.hour * 3600) / 60);//分
+
+			app.downObj.second = app.downObj.time - app.downObj.day * 3600 * 24 - app.downObj.hour * 3600 - app.downObj.minute * 60;
+
+			app.downObj.time -= 1;
+			if (app.downObj.day < 0) {
+				app.downObj.day = 0
+			}
+			if (app.downObj.day < 0 && app.downObj.hour < 0) {
+				app.downObj.hour = 0
+			}
+			if (app.downObj.day < 0 && app.downObj.hour < 0 && app.downObj.minute < 0) {
+				app.downObj.minute = 0
+			}
+			if (app.downObj.day < 0 && app.downObj.hour < 0 && app.downObj.minute < 0 && app.downObj.second < 0) {
+				app.downObj.second = 0;
+			}
+			if (app.downObj.time < 0) {
+				clearInterval(timer);
+				document.getElementsByClassName("timeover")[0].innerHTML = "活动已结束";
+			}
+			if (document.getElementsByClassName("timeover")[0].innerHTML == "活动已结束") {
+				app.downObj = {
+					day: 0,
+					hour: 0,
+					minute: 0,
+					second: 0
+				}
+			}
+		}
+		wxshare('比人气，喝好酒!','https://znbc.oss-cn-beijing.aliyuncs.com/picture/icon/20190822/35013e5f097cda6bf2a2dcb6f1b5249.jpg','CCTV知名品牌茅台新贵-华盛名酒强势入驻商丘，快来投票参与活动吧！')
+	</script>
+</body>
+
+</html>
