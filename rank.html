@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1,minimun-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="https://znbc.oss-cn-beijing.aliyuncs.com/picture/icon/20191014/znb.png">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/layer.css?v=3.1.0">
+    <title>榜单</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 50px;
+            background: white;
+            border-top: 1px solid #d2d2d2;
+        }
+
+        .footer ul {
+            display: inline-flex;
+            width: 100%;
+            text-align: center;
+            padding-top: 5px;
+            height: 50px;
+        }
+
+        .footer i {
+            display: block;
+            font-size: 25px;
+        }
+
+        .footer li {
+            width: 25%;
+        }
+
+        .rankList {
+            margin-bottom: 50px;
+        }
+
+        .rankList li {
+            list-style: none;
+            overflow: hidden;
+            border-bottom: 1px solid #d2d2d2;
+            padding: 10px 20px 10px 20px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .rankList i {
+            float: right;
+            height: 50px;
+            line-height: 50px;
+            font-style: normal;
+        }
+
+        .userImg img {
+            float: left;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .crown {
+            position: absolute;
+            width: 40px;
+            top: -10px;
+            left: 30px;
+        }
+
+        .active {
+            color: #43cb41;
+        }
+
+        .layui-layer-loading .layui-layer-content {
+			width: 32px;
+			height: 32px;
+			/* background: url(./css/loading-0.gif) no-repeat */
+		}
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="rankList">
+            <ul>
+                <li v-for="(el,index) in playerArr">
+                    <div class="userImg">
+                        <img v-if="el.imgurl !=''" :src="el.imgurl" alt="">
+                        <img v-else class="thum"
+                            src="https://znbc.oss-cn-beijing.aliyuncs.com/picture/icon/20191014/znb.png" alt="">
+                    </div>
+                    <div style="float: left;margin-left: 10px;margin-top: 5px;">
+                        <h2 style="font-size: 15px;">{{el.name}}[{{el.no.substr(8,4)}}号]</h2>
+                        <span>票数：{{el.votes}}</span>
+                    </div>
+                    <i>{{index+1}}</i>
+                    <img v-if="index<3" class="crown" src="images/crown.png" alt="" />
+                </li>
+            </ul>
+        </div>
+        <!-- 底部选项卡开始 -->
+        <div class="footer">
+            <ul>
+                <li @click="goUrl('main.html')"><i class="icon iconfont icon-shouye"></i>首页</li>
+                <li @click="goUrl('sign.html')"><i class="icon iconfont icon-xiugai"></i>报名</li>
+                <li class="active" @click="goUrl('rank.html')"><i class="icon iconfont icon-01"></i>榜单</li>
+                <li
+                    @click="location.href='https://m.znbchina.com/h5shop/back/news/news_info_f.html?id=3705&isapp=0&uid=1335570'">
+                    <i class="icon iconfont icon-tishi"></i>活动说明</li>
+            </ul>
+        </div>
+        <!-- 底部选项卡结束 -->
+    </div>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/layui.js"></script>
+    <!-- <script src="js/modernizr.custom.js"></script> -->
+    <script src="js/tools.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script>
+        //页面跳转
+        function goUrl(url) {
+            location.replace(url)
+            // location.href = url + "?phone=" + getParm("phone") + "&isapp=" + getParm("isapp")
+        }
+
+        function getParm(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURIComponent(r[2]);
+            return null;
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                loadFp: 1,
+                curPage: 1,
+                playerArr: [],
+            },
+            methods: {
+
+            },
+        });
+
+        var msgFp = null;
+        $(function () {
+            // app.phone = getParm("phone"), app.isapp = getParm("isapp"), 
+            $(window).scroll(function () {
+                var scrollTop = $(this).scrollTop(),
+                    scrollHeight = $(document).height(),
+                    windowHeight = $(this).height();
+                scrollHeight <= scrollTop + windowHeight && (app.curPage < app.totalpage ?
+                    (app.loadFp = layer.load(), app.isAsking ||
+                        (app.curPage++, app.isAsking = !0,
+                            $.ajax({
+                                type: "get",
+                                dataType: "json",
+                                traditional: !0,
+                                url: "./json/rank.json",
+                                data: {
+                                    type: 9,
+                                    pageSize: 15,
+                                    pageNum: app.curPage,
+                                    zuixin: 1
+                                },
+                                success: function (result) {
+                                    layer.close(app.loadFp), app.isAsking = !1;
+                                    for (var arr = eval(result).data.voteList, i = 0; i <
+                                        arr.length; i++) app.playerArr.push(arr[i])
+                                }
+                            }))) : msgFp || (msgFp = layer.msg("所有数据已经加载完毕！", {
+                        time: 1e3
+                    }, function () {
+                        msgFp = null
+                    })))
+            }), app.isAsking = !0, $.ajax({
+                type: "get",
+                dataType: "json",
+                traditional: !0,
+                url: "./json/rank.json",
+                data: {
+                    type: 9,
+                    pageSize: 15,
+                    pageNum: 1,
+                    zuixin: 1
+                },
+                success: function (result) {
+                    app.isAsking = !1,
+                        app.totalpage = eval(result).data.totalpage,
+                        app.playerArr = eval(result).data.voteList
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

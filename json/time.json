@@ -1,0 +1,23 @@
+{
+    "data": {
+        "voteType": {
+            "allVoteNum": 17897,
+            "endtime": "2019-11-13 23:59:59",
+            "fromEnd": 5388470000,
+            "fromStart": 7202869000,
+            "id": 9,
+            "info_url": "",
+            "name": "比人气  喝好酒 ",
+            "no": "MTJZSJ",
+            "num": 63,
+            "starttime": "2019-11-12 00:00:00",
+            "status": 1,
+            "top_url": "",
+            "views": 469179
+        },
+        "num": 63,
+        "allVoteNum": 17897
+    },
+    "resultscode": "1",
+    "errorMessage": ""
+}
