@@ -374,8 +374,8 @@
 					app.curPage = 1;
 					//清空选手
 					// app.playerArr = [];
-					if (app.search) {
-						if (app.search * 0 === 0) {
+					if (app.search) { //如果搜索框中有值
+						if (app.search * 0 === 0) { //搜索框中的值为数字（合法的编号）
 							$.ajax({
 								type: "get",
 								dataType: "json",
@@ -393,14 +393,13 @@
 									app.playerArr = eval(result).data.voteList;
 								}
 							})
-						} else {
+						} else { //搜索框中的值不是纯数字（不合法）
 							layer.msg('输入的编号不正确！')
 						}
-					} else {
+					} else { //搜索框总没有值
 						layer.msg('请输入编号！')
 					}
 				},
-
 				//点击选手跳转投票页面进行投票
 				toInfo: function (el) {
 					location.href = 'info.html?id=' + el.id + '&phone=' + app.phone + '&isapp=' + app.isapp
@@ -413,10 +412,10 @@
 		var msgFp = null;
 		$(function () {
 			// app.phone = getParm("phone"), app.isapp = getParm("isapp"), 
-			$(window).scroll(function () {
-					var scrollTop = $(this).scrollTop(),
-						scrollHeight = $(document).height(),
-						windowHeight = $(this).height();
+			$(window).scroll(function () { //获取当前窗口滚动条
+					var scrollTop = $(this).scrollTop(), //返回或设置匹配元素的滚动条的垂直位置。
+						scrollHeight = $(document).height(), //当前可见区域的高度大小
+						windowHeight = $(this).height(); //屏幕高度
 					scrollHeight <= scrollTop + windowHeight && (app.curPage < app.totalpage ?
 						(app.loadFp = layer.load(), app.isAsking ||
 							(app.curPage++, app.isAsking = !0,
@@ -456,7 +455,7 @@
 						app.voteObj = eval(result).data.voteType;
 						app.downObj.time = Math.floor(app.voteObj.fromEnd / 1000);
 						timer = setInterval(updateTimeDown, 1000);
-						document.title = app.voteObj.name
+						document.title = app.voteObj.name //将接口中的name赋给党前页面做标题
 						localStorage.setItem("url", app.voteObj.info_url)
 					}
 				})
