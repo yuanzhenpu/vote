@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/layui.css">
     <link rel="stylesheet" href="css/layer.css?v=3.1.0">
-	<link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
     <!-- 滑动验证CSS -->
     <link type="text/css" rel="stylesheet" href="css/slide-unlock.css">
     <title>投票</title>
@@ -20,13 +20,15 @@
         }
 
         /* 轮播图 */
-        .swiper-container{
+        .swiper-container {
             width: 90%;
         }
+
         .swiper-wrapper img {
             height: 160px;
         }
-        .swiper-wrapper{   
+
+        .swiper-wrapper {
             margin: 10px auto;
         }
 
@@ -67,15 +69,14 @@
         }
 
         .topMsg ul {
-            text-align: center;
             padding: 20px 0px;
         }
 
         .topMsg li {
+            width: 49%;
             display: inline-block;
-            /* margin-top: 5%; */
             font-size: 1rem;
-            padding: 0 25px;
+            text-align: center;
         }
 
         .topMsgLiSpan {
@@ -104,7 +105,21 @@
             color: white;
             line-height: 30px;
             margin: 10px auto;
+            margin-bottom: 30%;
             background-image: linear-gradient(to right, #EE2C2C, #FF3030);
+        }
+
+        .oneSpan {
+            font-size: 15px;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        .twoSpan {
+            display: block;
+            margin: 0 auto;
+            width: 90%;
+            text-indent: 2em;
         }
     </style>
 </head>
@@ -114,11 +129,15 @@
         <!-- <h1>ID:{{id}} 进行投票</h1> -->
         <div class="topMsg" v-cloak>
             <ul>
-                <li>姓名：选手姓名</li>
-                <li>票数：1560票</li>
                 <li>编号：{{id}}</li>
-                <li style="margin-top: 10px;">当前排名：第<span class="topMsgLiSpan"> 1 </span>名</li>
+                <li>票数：1560票</li><br>
+                <li>姓名：选手姓名</li>
+                <li style="margin-top: 10px;">排名：第<span class="topMsgLiSpan"> 1 </span>名</li>
             </ul>
+            <!-- <ul>
+                <li>编号：{{id}}</li>
+                <li style="margin-top: 10px;">排名：第<span class="topMsgLiSpan"> 1 </span>名</li>
+            </ul> -->
         </div>
 
         <!-- 轮播 -->
@@ -134,6 +153,12 @@
             </div>
         </div>
 
+        <!-- 拉票宣言 -->
+        <div class="manifesto">
+            <span class="oneSpan">拉票宣言：</span></br>
+            <span class="twoSpan">发生发生拉票萨达撒发生发萨达撒发生发生票萨达撒发生发萨达撒发生发发生发生</s>
+        </div>
+
         <!-- 滑动验证 -->
         <div id="slider" style="display: none;">
             <div id="slider_bg"></div>
@@ -141,7 +166,7 @@
         </div>
 
         <!-- 投票按钮 -->
-        <div class="voteBtn" @click="voteBtn()" >
+        <div class="voteBtn" @click="voteBtn()">
             投 票
         </div>
 
@@ -156,8 +181,7 @@
                 <li @click="goUrl('main.html')"><i class="icon iconfont icon-shouye"></i>首页</li>
                 <li @click="goUrl('sign.html')"><i class="icon iconfont icon-xiugai"></i>报名</li>
                 <li @click="goUrl('rank.html')"><i class="icon iconfont icon-01"></i>榜单</li>
-                <li
-                    @click="location.href='https://www.baidu.com'">
+                <li @click="location.href='https://www.baidu.com'">
                     <i class="icon iconfont icon-tishi"></i>活动说明</li>
             </ul>
         </div>
@@ -169,7 +193,7 @@
     <!-- <script src="js/modernizr.custom.js"></script> -->
     <script src="js/tools.js"></script>
     <script src="js/vue.min.js"></script>
-	<script src="js/swiper.min.js"></script>
+    <script src="js/swiper.min.js"></script>
     <!-- 滑动验证用的JS -->
     <script type="text/javascript" src="js/jquery.slideunlock.js"></script>
     <script>
@@ -183,46 +207,50 @@
             el: '#app',
             data: {
                 id: tools.getParm('id'),
-                permitVote:0, //‘0’未进行验证不允许投票，‘1’以验证允许投票
+                permitVote: 0, //‘0’未进行验证不允许投票，‘1’以验证允许投票
             },
             methods: {
                 // 投票按钮
-                voteBtn:function(){
-                    $('#slider').css('display','')
-                    if(app.permitVote==1){
-                        layer.msg('恭喜你，投票成功！',{time:800})
-                    }else{
-                        layer.msg('请先验证！',{time:800})
+                voteBtn: function () {
+                    $('#slider').css('display', '')
+                    if (app.permitVote == 1) {
+                        layer.msg('恭喜你，投票成功！', {
+                            time: 800
+                        })
+                    } else {
+                        layer.msg('请先验证！', {
+                            time: 800
+                        })
                     }
                 },
                 //我要报名按钮
-                signBtn:function(){
-                    location.href='./sign.html'
+                signBtn: function () {
+                    location.href = './sign.html'
                 }
 
             },
         })
 
         //Swiper轮播图
-		var mySwiper = new Swiper('.swiper-container', {
-			// autoplay: true, //等同于以下设置
-			loop: true, // 循环模式选项
-			autoplay: {
-				delay: 2000,
-				stopOnLastSlide: false,
-				disableOnInteraction: true,
-			},
-			pagination: {  //分页器
-				el: '.swiper-pagination',
-			},
-		});
+        var mySwiper = new Swiper('.swiper-container', {
+            // autoplay: true, //等同于以下设置
+            loop: true, // 循环模式选项
+            autoplay: {
+                delay: 2000,
+                stopOnLastSlide: false,
+                disableOnInteraction: true,
+            },
+            pagination: { //分页器
+                el: '.swiper-pagination',
+            },
+        });
 
         // 滑动验证
         $(function () {
             var slider = new SliderUnlock("#slider", {
                 successLabelTip: "验证成功!"
             }, function () {
-                app.permitVote=1;
+                app.permitVote = 1;
                 //以下四行设置恢复初始，不需要可以删除
                 // setTimeout(function () {
                 //     $("#labelTip").html("拖动滑块验证");

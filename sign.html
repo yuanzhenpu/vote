@@ -228,15 +228,6 @@
             // location.href = url + "?phone=" + getParm("phone") + "&isapp=" + getParm("isapp")
         }
 
-        function req(e, a) {
-            $("#vedio_li").attr("display", "none"),
-                $("#images video").attr("src",
-                    "https://img.znbchina.com/v/xuanchuan.mp4").attr("poster",
-                    "https://www.znbchina.com/templets/znb/images/thum.jpg"),
-                $("#images").css("display", "block"),
-                obj.imageUrl = "https://www.znbchina.com/templets/znb/images/thum.jpg"
-        }
-
         function telCheck(e) {
             return !!/^0?1[0-9][0-9]\d{8}$/.test(e)
         }
@@ -266,81 +257,140 @@
         };
         $(function () {
             $("#tjBtn").click(function () {
-                if (telCheck($("#phone").val().trim())) {
-                    var a = {
+                // layui.layer.msg("活动已结束！");
+                // return 
+                //验证手机号
+                if (!telCheck($("#phone").val().trim())) {
+                    layer.msg("手机号码输入不正确");
+                    return;
+                }
+                var dataObj = {
+                    type: maotaiID,
+                    name: $("#name").val().trim(),
+                    phone: $("#phone").val().trim(),
+                    remark: $("#remark").val().trim(),
+                    imgurl: 'https://znbc.oss-cn-beijing.aliyuncs.com/hd/20190822/fef909758553e6ed33370d1cc969699.jpg',
+                    vediourl: 'https://znbc.oss-cn-beijing.aliyuncs.com/v/086da35674d98a045c8bf0a0cd8f0592.mp4',
+                }
+                console.log(dataObj)
+                if (!dataObj.name || !dataObj.remark || !dataObj.vediourl || !dataObj.phone) {
+                    layer.msg("请完善所有信息！");
+                    return;
+                }
+                //验证手机号
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    traditional: true,
+                    url: "/znb/public/Vote/canAddVote",
+                    data: {
                         type: maotaiID,
-                        name: $("#name").val().trim(),
-                        phone: $("#phone").val().trim(),
-                        remark: $("#remark").val().trim(),
-                        imgurl: "https://www.znbchina.com/templets/znb/images/thum.jpg",
-                        vediourl: "https://img.znbchina.com/v/xuanchuan.mp4"
-                    };
-                    a.name && a.remark && a.vediourl && a.phone ?
+                        phone: dataObj.phone,
+                    },
+                    success: function (result) {
+                        if (result.data.vote != null) {
+                            layer.msg("对不起，此手机号已参与投票！");
+                            return;
+                        }
                         $.ajax({
                             type: "post",
-                            dataType: "json",
-                            traditional: !0,
-                            url: "/znb/public/Vote/canAddVote",
-                            data: {
-                                type: maotaiID,
-                                phone: a.phone
-                            },
-                            success: function (e) {
-                                null == e.data.vote ? $.ajax({
-                                    type: "post",
-                                    url: "/znb/public/Vote/addVote",
-                                    data: a,
-                                    success: function (e) {
-                                        "0" == e.resultscode ? layui.layer.msg(e
-                                            .errorMessage) : layui.layer.msg(
-                                            "报名成功！", {
-                                                time: 1e3
-                                            },
-                                            function () {
-                                                location.href =
-                                                    "home.html?phone=" +
-                                                    getParm("phone")
-                                            })
-                                    }
-                                }) : layui.layer.msg("对不起，此手机号已参与投票！")
+                            url: "/znb/public/Vote/addVote",
+                            data: dataObj,
+                            success: function (result) {
+                                if (result.resultscode == "0") {
+                                    layer.msg(result.errorMessage);
+                                } else {
+                                    layer.msg("报名成功！", {
+                                        time: 1000
+                                    }, function () {
+                                        location.href =
+                                            "home.html?phone=" +
+                                            getParm("phone");
+                                    });
+                                }
                             }
-                        }) : layer.msg("请完善所有信息！")
-                } else layer.msg("手机号码输入不正确")
-            }), $("#file").click(function () {
-                telCheck($("#phone").val().trim()) ? $.ajax({
+                        })
+                    }
+                });
+            })
+            $("#file").click(function () {
+                //验证手机号
+                if (!telCheck($("#phone").val().trim())) {
+                    layer.msg("手机号码输入不正确");
+                    return;
+                }
+                $.ajax({
                     type: "post",
                     url: "/znb/public/VipUser/getVipuserByUsername",
-                    async: !0,
+                    async: true,
                     data: {
                         username: $("#phone").val().trim()
                     },
-                    success: function (e) {
-                        null != e.data.vipUser ? (null == e.data.vipUser.store ? obj.uid = e
-                            .data.vipUser.id : obj.uid = e.data.vipUser.store.uid, req(
-                                obj.uid, obj.pageNum)) : layui.layer.msg("请先注册支农宝账号")
+                    success: function (res) {
+                        if (res.data.vipUser == null) {
+                            layer.msg("请先注册支农宝账号");
+                            return;
+                        }
+                        if (res.data.vipUser.store == null) {
+                            obj.uid = res.data.vipUser.id;
+                        } else {
+                            obj.uid = res.data.vipUser.store.uid;
+                        }
+                        req(obj.uid, obj.pageNum);
                     }
-                }) : layui.layer.msg("手机号码输入不正确")
+                });
             })
-        }), $("#videoBox p span").click(function (e) {
-            if (0 == $(this).index()) {
-                if (obj.totalpage <= 1) return void alert("已经是第一页了！");
-                req(obj.uid, obj.pageNum)
-            } else {
-                if (obj.totalpage <= obj.pageNum) return void alert("已经是最后一页了！");
-                req(obj.uid, ++obj.pageNum)
-            }
-        }), getParm("phone") && telCheck(getParm("phone")) && $.ajax({
-            type: "post",
-            url: "/znb/public/VipUser/getVipuserByUsername",
-            async: !0,
-            data: {
-                username: getParm("phone")
-            },
-            success: function (e) {
-                $("#phone").val(getParm("phone")), $("#name").val(e.data.vipUser.alipayname), $("#age").val(
-                    e.data.vipUser.age)
-            }
         })
+
+        if (getParm("phone")) {
+            if (telCheck(getParm("phone"))) {
+                $.ajax({
+                    type: "post",
+                    url: "/znb/public/VipUser/getVipuserByUsername",
+                    async: true,
+                    data: {
+                        username: getParm("phone")
+                    },
+                    success: function (res) {
+                        $("#phone").val(getParm("phone"));
+                        $("#name").val(res.data.vipUser.alipayname);
+                        $("#age").val(res.data.vipUser.age);
+
+                    }
+                });
+            }
+        }
+
+        // function req(e, a) {
+        //     $("#vedio_li").attr("display", "none"),
+        //         $("#images video").attr("src",
+        //             "https://img.znbchina.com/v/xuanchuan.mp4").attr("poster",
+        //             "https://www.znbchina.com/templets/znb/images/thum.jpg"),
+        //         $("#images").css("display", "block"),
+        //         obj.imageUrl = "https://www.znbchina.com/templets/znb/images/thum.jpg"
+        // }
+
+
+        // $("#videoBox p span").click(function (e) {
+        //     if (0 == $(this).index()) {
+        //         if (obj.totalpage <= 1) return void alert("已经是第一页了！");
+        //         req(obj.uid, obj.pageNum)
+        //     } else {
+        //         if (obj.totalpage <= obj.pageNum) return void alert("已经是最后一页了！");
+        //         req(obj.uid, ++obj.pageNum)
+        //     }
+        // }), getParm("phone") && telCheck(getParm("phone")) && $.ajax({
+        //     type: "post",
+        //     url: "/znb/public/VipUser/getVipuserByUsername",
+        //     async: !0,
+        //     data: {
+        //         username: getParm("phone")
+        //     },
+        //     success: function (e) {
+        //         $("#phone").val(getParm("phone")), $("#name").val(e.data.vipUser.alipayname), $("#age").val(
+        //             e.data.vipUser.age)
+        //     }
+        // })
     </script>
 </body>
 
