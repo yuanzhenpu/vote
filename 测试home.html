@@ -128,9 +128,7 @@
 	<script src="js/vue.min.js"></script>
 	<script src="./js/inf.js"></script>
 	<script src="./js/tools.js"></script>
-	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 	<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
-	<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 	<script src="js/wxshare.js"></script>
 	<script>
 		function go(){
@@ -160,9 +158,7 @@
 			el: "#app",
 			data: {
 				voteObj: { voteType: {} },
-
 				isSearch: false,
-
 				playerArr: [],
 				totalpage: 1,
 				curPage: 1,
@@ -225,8 +221,7 @@
 				var scrollTop = $(this).scrollTop();
 				var scrollHeight = $(document).height();
 				var windowHeight = $(this).height();
-				if (scrollTop + windowHeight < scrollHeight) {
-					
+				if (scrollTop + windowHeight < scrollHeight) {				
 					if (app.curPage < app.totalpage) {
 						app.loadFp = layui.layer.load();
 						if (!app.isAsking) {
