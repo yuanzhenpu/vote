@@ -317,25 +317,21 @@
 		<div class="">
 			<div class="footer">
 				<ul>
-					<li class="active" @click="goUrl('main.html')"><i class=" icon iconfont icon-shouye"></i>首页</li>
+					<li @click="goUrl('main.html')" class="active"><i class=" icon iconfont icon-shouye"></i>首页</li>
 					<li @click="goUrl('sign.html')"><i class=" icon iconfont icon-xiugai"></i>报名</li>
 					<li @click="goUrl('rank.html')"><i class=" icon iconfont icon-01"></i>榜单</li>
-					<li
-						@click="location.href='https://www.baidu.com'">
-						<i class="icon iconfont icon-tishi"></i>活动说明</li>
+					<li @click="location.href='https://www.baidu.com'"><i class="icon iconfont icon-tishi"></i>活动说明</li>
 				</ul>
 			</div>
 		</div>
 		<!-- 底部选项卡结束 -->
 	</div>
-	<!-- <script src="js/cbpFWTabs.js"></script> -->
-	<!--去点tab选项卡上的横线隐藏此js-->
+	<!-- <script src="js/cbpFWTabs.js"></script> --><!--去点tab选项卡上的横线隐藏此js-->
 	<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/layer.js"></script>
 	<script src="js/layui.js"></script>
 	<script src="js/inf.js"></script>
-	<!-- <script src="js/modernizr.custom.js"></script> -->
-	<!--没什么用-->
+	<!-- <script src="js/modernizr.custom.js"></script> --><!--没什么用-->	
 	<script src="js/tools.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/swiper.min.js"></script>
@@ -376,7 +372,7 @@
 					// app.playerArr = [];
 					if (app.search) { //如果搜索框中有值
 						if (app.search * 0 === 0) { //搜索框中的值为数字（合法的编号）
-							layer.msg('搜索'+app.search+'号选手！')
+							layer.msg('搜索' + app.search + '号选手！')
 							$.ajax({
 								type: "get",
 								dataType: "json",
@@ -480,8 +476,6 @@
 			})
 		})
 
-
-
 		//Swiper轮播图
 		var mySwiper = new Swiper('.swiper-container', {
 			// autoplay: true, //等同于以下设置
@@ -502,7 +496,7 @@
 			app.downObj.day = Math.floor(app.downObj.time / (24 * 3600)); //天
 			app.downObj.hour = Math.floor((app.downObj.time - app.downObj.day * 3600 * 24) / 3600); //时
 			app.downObj.minute = Math.floor((app.downObj.time - app.downObj.day * 3600 * 24 - app.downObj.hour * 3600) /
-			60); //分
+				60); //分
 			app.downObj.second = app.downObj.time - app.downObj.day * 3600 * 24 - app.downObj.hour * 3600 - app.downObj
 				.minute * 60;
 			app.downObj.time -= 1;
