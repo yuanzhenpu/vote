@@ -342,7 +342,7 @@
 	<script>
 		//页面跳转
 		function goUrl(url) {
-			location.replace(url)
+			location.replace(url) //加载新页面不加载记录
 			// location.href = url + "?phone=" + getParm("phone") + "&isapp=" + getParm("isapp")
 		}
 		// VUE开始
@@ -496,7 +496,7 @@
 			},
 		});
 
-		// 时间计算函数
+		// 倒计时，时间计算函数
 		function updateTimeDown() {
 			//倒计时
 			app.downObj.day = Math.floor(app.downObj.time / (24 * 3600)); //天
