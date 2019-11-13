@@ -82,10 +82,10 @@
         }
 
         .layui-layer-loading .layui-layer-content {
-			width: 32px;
-			height: 32px;
-			/* background: url(./css/loading-0.gif) no-repeat */
-		}
+            width: 32px;
+            height: 32px;
+            /* background: url(./css/loading-0.gif) no-repeat */
+        }
     </style>
 </head>
 
@@ -114,8 +114,7 @@
                 <li @click="goUrl('main.html')"><i class="icon iconfont icon-shouye"></i>首页</li>
                 <li @click="goUrl('sign.html')"><i class="icon iconfont icon-xiugai"></i>报名</li>
                 <li class="active" @click="goUrl('rank.html')"><i class="icon iconfont icon-01"></i>榜单</li>
-                <li
-                    @click="location.href='https://www.baidu.com'">
+                <li @click="location.href='https://www.baidu.com'">
                     <i class="icon iconfont icon-tishi"></i>活动说明</li>
             </ul>
         </div>
@@ -177,14 +176,22 @@
                                 success: function (result) {
                                     layer.close(app.loadFp), app.isAsking = !1;
                                     for (var arr = eval(result).data.voteList, i = 0; i <
-                                        arr.length; i++) app.playerArr.push(arr[i])
+                                        arr.length; i++)
+                                        app.playerArr.push(arr[i])
                                 }
-                            }))) : msgFp || (msgFp = layer.msg("所有数据已经加载完毕！", {
-                        time: 1e3
-                    }, function () {
-                        msgFp = null
-                    })))
-            }), app.isAsking = !0, $.ajax({
+                            })
+                        )
+                    ) :
+                    msgFp || (msgFp = layer.msg("所有数据已经加载完毕！", {
+                            time: 1e3
+                        },
+                        function () {
+                            msgFp = null
+                        }))
+                )
+            }), 
+            app.isAsking = !0, 
+            $.ajax({
                 type: "get",
                 dataType: "json",
                 traditional: !0,
@@ -197,8 +204,8 @@
                 },
                 success: function (result) {
                     app.isAsking = !1,
-                        app.totalpage = eval(result).data.totalpage,
-                        app.playerArr = eval(result).data.voteList
+                    app.totalpage = eval(result).data.totalpage,
+                    app.playerArr = eval(result).data.voteList
                 }
             })
         })

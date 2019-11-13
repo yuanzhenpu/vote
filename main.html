@@ -452,7 +452,7 @@
 						app.voteObj = eval(result).data.voteType;
 						app.downObj.time = Math.floor(app.voteObj.fromEnd / 1000);
 						timer = setInterval(updateTimeDown, 1000);
-						document.title = app.voteObj.name //将接口中的name赋给党前页面做标题
+						document.title = app.voteObj.name //将接口中的name赋给当前页面做标题
 						localStorage.setItem("url", app.voteObj.info_url)
 					}
 				})
